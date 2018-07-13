@@ -20,4 +20,7 @@ nats foo bar
 
 # Listen with wildcards
 nats 'foo.>'
+
+# Filter received messages with grep
+nats 'foo.*' | grep 'some filter'
 ```
