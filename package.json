@@ -1,6 +1,6 @@
 {
   "name": "nats-cli",
-  "description": "",
+  "description": "Simple CLI for NATS, can publish/subscribe to subjects",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
