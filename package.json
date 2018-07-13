@@ -1,0 +1,68 @@
+{
+  "name": "nats-cli",
+  "description": "",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "test": "npm run lint && jest --coverage",
+    "test:watch": "jest --watch",
+    "lint": "standard | snazzy; exit 0",
+    "lint:fix": "standard --fix | snazzy; exit 0",
+    "build": "babel src/ -D -d ./lib; exit 0",
+    "build:watch": "babel src/ -D -d ./lib --watch",
+    "coverage": "jest --coverage && cat ./coverage/lcov.info | coveralls",
+    "prepublish": "npm run build && npm test"
+  },
+  "bin": {
+    "nats": "./lib/index.js"
+  },
+  "main": "lib/index.js",
+  "module": "src/index.js",
+  "files": [
+    "lib",
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "nats",
+    "cli",
+    "pubsub",
+    "publish",
+    "subscribe"
+  ],
+  "author": {
+    "name": "Frederik Kvartborg Albertsen",
+    "email": "hello@kvartborg.net",
+    "url": "https://kvartborg.net"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kvartborg/nats-cli"
+  },
+  "bugs": {
+    "url": "https://github.com/kvartborg/nats-cli/issues"
+  },
+  "engines": {
+    "node": ">=6"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-jest": "^23.4.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
+    "coveralls": "^3.0.2",
+    "jest": "^23.4.0",
+    "snazzy": "^7.0.0",
+    "standard": "^11.0.1"
+  },
+  "jest": {
+    "modulePaths": [
+      "src"
+    ]
+  },
+  "dependencies": {
+    "meow": "^5.0.0",
+    "nats": "^1.0.0"
+  }
+}
