@@ -3,8 +3,6 @@
 import nats from 'nats'
 import chalk from 'chalk'
 import meow from 'meow'
-import { version } from '../package.json'
-
 
 const cli = meow(`
   Usage
@@ -12,7 +10,7 @@ const cli = meow(`
   Options
     --host, -h      Host, defaults to localhost
     --port, -p      Port, defaults to 4222
-    --version, -v   Check what version of the cli you are running
+    --version       Check what version of the cli you are running
     --help          Get help
 `, {
   flags: {
@@ -31,12 +29,12 @@ const cli = meow(`
 
 const client = nats.connect(`nats://${cli.flags.host}:${cli.flags.port}`)
 
-function listen(msg, reply, subject) {
+function listen (msg, reply, subject) {
   console.log(`${chalk.grey(subject)} : ${msg}`)
 }
 
 if (cli.input.length > 1) {
-  const [_ , ...msg] = cli.input
+  const [_, ...msg] = cli.input // eslint-disable-line
   client.publish(cli.input[0], msg.join(' '))
   client.subscribe(cli.input[0], () => {
     // Wait for client to send the message before exiting

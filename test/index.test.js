@@ -1,2 +1,3 @@
-/* eslint-env: jest */
-test('test', done => done())
+/* eslint-env jest */
+
+test('test', () => {})
