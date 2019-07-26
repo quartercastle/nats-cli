@@ -48,9 +48,10 @@
     "node": ">=6"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1",
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-transform-modules-commonjs": "^7.5.0",
     "babel-jest": "^24.8.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
     "coveralls": "^3.0.2",
     "jest": "^24.8.0",
     "snazzy": "^8.0.0",
