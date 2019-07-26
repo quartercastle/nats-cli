@@ -31,7 +31,7 @@ const client = nats.connect(`nats://${cli.flags.host}:${cli.flags.port}`)
 const subject = cli.input[0]
 
 function onMessage (msg, reply, subject) {
-  console.log(`${chalk.grey(subject)} : ${msg}`)
+  console.log(chalk.grey(subject), ':', msg)
 }
 
 if (cli.input.length > 1) {
