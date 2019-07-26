@@ -28,18 +28,19 @@ const cli = meow(`
 })
 
 const client = nats.connect(`nats://${cli.flags.host}:${cli.flags.port}`)
+const subject = cli.input[0]
 
-function listen (msg, reply, subject) {
+function onMessage (msg, reply, subject) {
   console.log(`${chalk.grey(subject)} : ${msg}`)
 }
 
 if (cli.input.length > 1) {
-  const [_, ...msg] = cli.input // eslint-disable-line
-  client.publish(cli.input[0], msg.join(' '))
-  client.subscribe(cli.input[0], () => {
+  const [_, ...msgs] = cli.input // eslint-disable-line
+  client.publish(subject, msgs.join(' '))
+  client.subscribe(subject, () => {
     // Wait for client to send the message before exiting
     process.exit(0)
   })
 } else {
-  client.subscribe(cli.input[0] || '>', listen)
+  client.subscribe(subject || '>', onMessage)
 }
