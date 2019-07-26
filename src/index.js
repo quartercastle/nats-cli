@@ -36,10 +36,12 @@ function onMessage (msg, reply, subject) {
 
 if (cli.input.length > 1) {
   const [_, ...msgs] = cli.input // eslint-disable-line
-  client.publish(subject, msgs.join(' '))
-  client.subscribe(subject, () => {
-    // Wait for client to send the message before exiting
-    process.exit(0)
+  client.publish(subject, msgs.join(' '), (err) => {
+    if (err) {
+      console.error(err)
+      process.exit(1)
+    }
+    client.close()
   })
 } else {
   client.subscribe(subject || '>', onMessage)
