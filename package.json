@@ -6,8 +6,8 @@
   "scripts": {
     "test": "npm run lint && jest --coverage",
     "test:watch": "jest --watch",
-    "lint": "standard | snazzy; exit 0",
-    "lint:fix": "standard --fix | snazzy; exit 0",
+    "lint": "standard | snazzy",
+    "lint:fix": "standard --fix | snazzy",
     "build": "babel src/ -D -d ./lib; exit 0",
     "build:watch": "babel src/ -D -d ./lib --watch",
     "coverage": "jest --coverage && cat ./coverage/lcov.info | coveralls",
