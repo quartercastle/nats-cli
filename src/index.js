@@ -3,6 +3,8 @@
 import nats from 'nats'
 import chalk from 'chalk'
 import meow from 'meow'
+import { Writable } from 'stream'
+import splitIntoLines from 'split2'
 
 const cli = meow(`
   Usage
@@ -10,6 +12,7 @@ const cli = meow(`
   Options
     --host, -h      Host, defaults to localhost
     --port, -p      Port, defaults to 4222
+    --stdin         Read messages from stdin
     --version       Check what version of the cli you are running
     --help          Get help
 `, {
@@ -23,6 +26,10 @@ const cli = meow(`
       type: 'string',
       default: process.env.NATS_PORT || '4222',
       alias: 'p'
+    },
+    stdin: {
+      type: 'boolean',
+      default: false
     }
   }
 })
@@ -30,19 +37,34 @@ const cli = meow(`
 const client = nats.connect(`nats://${cli.flags.host}:${cli.flags.port}`)
 const subject = cli.input[0]
 
+function publish (msg, cb) {
+  client.publish(subject, msg, cb)
+}
+function printErrorAndAbort (err) {
+  console.error(err)
+  process.exit(1)
+}
 function onMessage (msg, reply, subject) {
   console.log(chalk.grey(subject), ':', msg)
 }
 
 if (cli.input.length > 1) {
   const [_, ...msgs] = cli.input // eslint-disable-line
-  client.publish(subject, msgs.join(' '), (err) => {
-    if (err) {
-      console.error(err)
-      process.exit(1)
-    }
+  publish(msgs.join(' '), (err) => {
+    if (err) printErrorAndAbort(err)
     client.close()
   })
+} else if (cli.flags.stdin) {
+  process.stdin
+    .once('error', printErrorAndAbort)
+    .pipe(splitIntoLines())
+    .once('error', printErrorAndAbort)
+    .pipe(new Writable({
+      objectMode: true,
+      write: (msg, _, cb) => publish(msg, cb)
+    }))
+    .once('error', printErrorAndAbort)
+    .once('finish', () => client.close())
 } else {
   client.subscribe(subject || '>', onMessage)
 }
