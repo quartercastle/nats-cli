@@ -10,6 +10,7 @@ const cli = meow(`
   Usage
     $ nats <subject> <message>
   Options
+    --auth, -a      Authentication, specified as username:password or token
     --host, -h      Host, defaults to localhost
     --port, -p      Port, defaults to 4222
     --stdin         Read messages from stdin
@@ -17,6 +18,11 @@ const cli = meow(`
     --help          Get help
 `, {
   flags: {
+    auth: {
+      type: 'string',
+      default: '',
+      alia: 'a'
+    },
     host: {
       type: 'string',
       default: process.env.NATS_HOST || 'localhost',
@@ -34,7 +40,21 @@ const cli = meow(`
   }
 })
 
-const client = nats.connect(`nats://${cli.flags.host}:${cli.flags.port}`)
+const options = {
+  url: `nats://${cli.flags.host}:${cli.flags.port}`
+}
+
+if (cli.flags.auth.length > 0) {
+  if (cli.flags.auth.indexOf(':') > -1) {
+    const split = cli.flags.auth.split(':')
+    options.username = split[0]
+    options.password = split[1]
+  } else {
+    options.token = cli.flags.auth
+  }
+}
+
+const client = nats.connect(options)
 const subject = cli.input[0]
 
 function publish (msg, cb) {
